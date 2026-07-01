@@ -67,6 +67,44 @@ def  round_robin(processes, quantum):
     return processes
 
 
+def sjf(processes):
+    processes.sort(key = lambda p: p.arrival_time)
+    n = len(processes)
+    completed = 0 
+    current_time = 0
+    is_done = [False] * n
+
+    while completed < n :
+        # Find all processes that have arrived and aren't done yet
+        available = []
+        for idx in range(n):
+            if not is_done[idx] and processes[idx].arrival_time <= current_time:
+                available.append(idx)
+
+        if not available :
+            # nobody ready yet , jump clock to next arrival 
+            next_arrival = min(processes[idx].arrival_time for idx in range(n) if not is_done[idx])
+            current_time = next_arrival
+            continue
+
+        #pick the available process with smallest burst time 
+
+        idx = min(available, key = lambda i: processes[i].burst_time)
+        p = processes[idx]
+
+        p.start_time = current_time
+        current_time += p.burst_time
+        p.completion_time = current_time
+        p.turnaround_time = p.completion_time - p.arrival_time
+        p.waiting_time = p.start_time - p.arrival_time
+
+        is_done[idx] = True
+
+        completed += 1
+
+    return processes
+
+
 
 
 
