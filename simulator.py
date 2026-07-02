@@ -105,6 +105,46 @@ def sjf(processes):
     return processes
 
 
+def priority_scheduling(processes):
+    processes.sort(key = lambda p: p.arrival_time)
+    n = len(processes)
+    completed = 0
+    current_time = 0 
+    is_done = [False] * n
+
+    while completed < n :
+        available = []
+        for idx in range(n):
+            if not is_done[idx] and processes[idx].arrival_time <= current_time:
+                available.append(idx)
+
+        if not available:
+            next_arrival = min(processes[idx].arrival_time for idx in range(n)if not is_done[idx])
+            current_time = next_arrival
+            continue
+
+        # picks up the available process with lowest priority number as lower proiority number = higher priority 
+
+        idx = min(available,key= lambda i : processes[i].priority)
+        p = processes[idx]
+        p.start_time = current_time
+
+        current_time += p.burst_time
+        p.completion_time = current_time
+        p.turnaround_time = p.completion_time - p.arrival_time
+        p.waiting_time = p.start_time - p.arrival_time
+
+        is_done[idx] = True
+
+        completed +=1 
+
+    return processes
+
+
+
+
+
+
 
 
 
