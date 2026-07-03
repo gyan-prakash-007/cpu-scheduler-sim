@@ -141,6 +141,74 @@ def priority_scheduling(processes):
     return processes
 
 
+def mlfq(processes , quantums = [2,4,8]):
+    processes.sort(key = lambda p: p.arrival_time)
+    n = len(processes)
+    num_queues = len(quantums)
+    queue = [deque() for _ in range(num_queues)] # queues = [deque(), deque(), deque()]
+
+    current_time = 0 
+    i = 0 # index itno processes , tracks who has arrived 
+    completed = 0
+    while completed < n:
+        # add any newely arrived process into queue 0 
+        while i < n and processes[i].arrival_time <= current_time:
+            queue[0].append(processes[i])
+            i += 1 
+
+
+        #find the highest prirotiy non empty non empty queue 
+        current_queue = None
+
+        for q_level in range(num_queues):
+            if queue[q_level] :
+                current_queue = q_level
+                break
+
+        if current_queue is None:
+            #nobody ready yet , jump clock to next arrival 
+            current_time = processes[i].arrival_time
+            continue
+
+
+        #run the process of the first queue 
+
+        p = queue[current_queue].popleft()
+
+        if p.start_time is None:
+            p.start_time = current_time 
+
+        quantum = quantums[current_queue]
+        run_time = min(quantum,p.remaining_time)
+        current_time += run_time 
+        p.remaining_time -= run_time
+
+        # checking for new arrivals 
+        while i < n and processes[i].arrival_time <= current_time:
+            queue[0].append(processes[i])
+            i+=1 
+
+        if p.remaining_time == 0:
+            p.completion_time = current_time 
+            p.turnaround_time = p.completion_time - p.arrival_time
+            p.waiting_time = p.turnaround_time - p.burst_time
+            completed += 1 
+
+        else :
+            #demotion
+            next_queue = min(current_queue + 1 , num_queues-1)
+            queue[next_queue].append(p)
+
+
+    return processes 
+
+
+
+
+
+
+
+
 
 
 

@@ -3,6 +3,7 @@ from simulator import fcfs
 from simulator import round_robin
 from simulator import sjf
 from simulator import priority_scheduling
+from simulator import mlfq
 
 
 p1 = process(1,0,5)
@@ -57,5 +58,18 @@ pr_result = priority_scheduling(pr_processes)
 
 print("\n--Priority Scheduling--")
 for p in pr_result:
+    print(f"P{p.pid}: start={p.start_time}, completion={p.completion_time}, "
+          f"waiting={p.waiting_time}, turnaround={p.turnaround_time}")
+    
+
+p1 = process(1,0,5,priority=2)
+p2 = process(2,1,3,priority=1)
+p3 = process(3,2,8,priority=3)
+
+mlfq_processes = [p1,p2,p3]
+mlfq_result = mlfq(mlfq_processes,quantums=[2,4,8])
+
+print("\n--- MLFQ ---")
+for p in mlfq_result:
     print(f"P{p.pid}: start={p.start_time}, completion={p.completion_time}, "
           f"waiting={p.waiting_time}, turnaround={p.turnaround_time}")
