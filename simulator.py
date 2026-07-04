@@ -203,6 +203,51 @@ def mlfq(processes , quantums = [2,4,8]):
     return processes 
 
 
+def cfs(processes, time_slice = 1 ):
+    processes.sort(key = lambda p : p.arrival_time)
+    n = len(processes)
+    completed = 0 
+    current_time = 0
+
+    # assigning each process a vruntime , starting at 0 
+
+    for p in processes :
+        p.vruntime = 0 
+
+    while completed < n :
+        # each process in ready queue but not executed yet 
+        available = [p for p in processes if p.arrival_time <= current_time and p.remaining_time > 0]
+
+        if not available:
+            # if no process is arrived yet 
+            not_arrived = [p for p in processes if p.remaining_time> 0 ]
+            current_time = min(p.arrival_time for p in not_arrived)
+            continue 
+
+
+        # pick the process with lowest vruntime 
+
+        p = min(available, key = lambda proc: proc.vruntime)
+
+
+        if p.start_time is None:
+            p.start_time = current_time 
+
+        run_time = min(time_slice, p.remaining_time)
+        current_time += run_time 
+        p.remaining_time -= run_time
+        p.vruntime += run_time
+
+        if p.remaining_time == 0 :
+            p.completion_time = current_time
+            p.turnaround_time = p.completion_time - p.arrival_time
+            p.waiting_time = p.turnaround_time - p.burst_time
+            completed += 1 
+
+    return processes 
+
+
+
 
 
 
