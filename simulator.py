@@ -1,5 +1,6 @@
 from process import process
 from collections import deque 
+import copy
 
 
 def fcfs(process):
@@ -245,6 +246,13 @@ def cfs(processes, time_slice = 1 ):
             completed += 1 
 
     return processes 
+
+
+def calculate_averages(processes):
+    n = len(processes)
+    avg_waiting = sum(p.waiting_time for p in processes)/n
+    avg_turnaround = sum(p.turnaround_time for p in processes)/n
+    return avg_turnaround, avg_waiting
 
 
 
