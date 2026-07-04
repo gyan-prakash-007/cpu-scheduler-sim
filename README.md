@@ -1,6 +1,6 @@
 # CPU Scheduling Simulator
 
-A Python simulator implementing and comparing 6 classic CPU scheduling algorithms — built to understand how operating systems actually decide which process runs next.
+A Python simulator implementing and comparing 6 classic CPU scheduling algorithms built to understand how operating systems actually decide which process runs next.
 
 ## Why I built this
 
